@@ -1,11 +1,12 @@
-package com.abhishek.previewexoplayer.exodownload
+package com.abhishek.exodownload
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.StatFs
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
@@ -24,12 +25,11 @@ import androidx.media3.exoplayer.offline.DownloadRequest
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.source.TrackGroupArray
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import com.abhishek.exodownload.DownloadUtil.showConfirmationDialog
 import com.abhishek.previewexoplayer.R
 import com.abhishek.previewexoplayer.databinding.ExoDownloadBottomSheetBinding
-import com.abhishek.previewexoplayer.exodownload.DownloadUtil.showConfirmationDialog
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
-import com.vidyakul.exodownload.DownloadOptionAdapter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -116,9 +116,9 @@ class DownloadTracker(
         val download = downloads[uri]
         download ?: return
         binding.tvHeading.text = "Choose Action"
-        binding.divider.visibility= View.VISIBLE
-        binding.rvItems.visibility= View.VISIBLE
-        binding.circularLoader.visibility= View.GONE
+        binding.divider.show()
+        binding.rvItems.show()
+        binding.circularLoader.hide()
 
 
         val arrayAdapter = arrayListOf<String>()
@@ -126,20 +126,21 @@ class DownloadTracker(
             Download.STATE_STOPPED, Download.STATE_FAILED -> {
                 arrayAdapter.add("Resume Download")
                 arrayAdapter.add("Cancel Download")
-               // arrayAdapter.add("View Downloads")
+                // arrayAdapter.add("View Downloads")
             }
 
             Download.STATE_DOWNLOADING -> {
                 arrayAdapter.add("Pause Download")
                 arrayAdapter.add("Cancel Download")
-               // arrayAdapter.add("View Downloads")
+                // arrayAdapter.add("View Downloads")
             }
 
             Download.STATE_QUEUED -> {
                 arrayAdapter.add("Cancel Download")
-              //  arrayAdapter.add("View Downloads")
+                //  arrayAdapter.add("View Downloads")
             }
-            Download.STATE_REMOVING->{
+
+            Download.STATE_REMOVING -> {
                 binding.tvHeading.text = "Deleting video please wait"
             }
         }
@@ -153,6 +154,7 @@ class DownloadTracker(
                     "Cancel Download" -> {
                         removeDownload(download.request.uri)
                     }
+
                     "Resume Download" -> {
                         DownloadService.sendSetStopReason(
                             context,
@@ -172,25 +174,28 @@ class DownloadTracker(
                             false
                         )
                     }
-//                    "View Downloads"->{
-//                        val intent = Intent(context, DownloadedActivity::class.java)
-//                        startActivity(context,intent,null)
-//                    }
+
+                    "View Downloads" -> {
+                        val intent = Intent(context, DownloadedActivity::class.java)
+                        startActivity(context, intent, null)
+                    }
                 }
                 actionDialog.dismiss()
             }
 
         try {
             if (download.state == Download.STATE_COMPLETED) {
-                showConfirmationDialog(context, "Delete Confirmation", "Do you want to delete this video?", "Yes",
+                showConfirmationDialog(context,
+                    "Delete Confirmation",
+                    "Do you want to delete this video?",
+                    "Yes",
                     positiveAction = {
                         removeDownload(download.request.uri)
                     },
                     "No",
                     negativeAction = {}
                 )
-            }
-        else
+            } else
                 actionDialog.show()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -358,11 +363,12 @@ class DownloadTracker(
         // DownloadHelper.Callback implementation.
         override fun onPrepared(helper: DownloadHelper) {
             if (helper.periodCount == 0) {
-                val mediaItemTag: MediaItemTag = mediaItem.localConfiguration?.tag as MediaItemTag
-                val estimatedContentLength: Long = (DEFAULT_BITRATE * mediaItemTag.duration)
+                val mediaItem: com.abhishek.exodownload.MediaItem =
+                    mediaItem.localConfiguration?.tag as com.abhishek.exodownload.MediaItem
+                val estimatedContentLength: Long = (DEFAULT_BITRATE * mediaItem.duration)
                     .div(C.MILLIS_PER_SECOND).div(C.BITS_PER_BYTE)
                 val downloadRequest: DownloadRequest = downloadHelper.getDownloadRequest(
-                    convertGson(mediaItemTag).toString(),
+                    convertGson(mediaItem).toString(),
                     Util.getUtf8Bytes(estimatedContentLength.toString())
                 )
                 startDownload(downloadRequest)
@@ -391,14 +397,15 @@ class DownloadTracker(
 
             // We sort here because later we use formatDownloadable to select track
             formatDownloadable.sortBy { it.height }
-            val mediaItemTag: MediaItemTag = mediaItem.localConfiguration?.tag as MediaItemTag
-            if (mediaItemTag.duration < 0) {
+            val mediaItem: com.abhishek.exodownload.MediaItem =
+                mediaItem.localConfiguration?.tag as com.abhishek.exodownload.MediaItem
+            if (mediaItem.duration < 0) {
                 return
             }
             val optionsDownload: List<String> = formatDownloadable.map {
                 context.getString(
                     R.string.dialog_option, it.height,
-                    (it.bitrate * mediaItemTag.duration).div(8000).formatFileSize()
+                    (it.bitrate * mediaItem.duration).div(8000).formatFileSize()
                 )
             }
 
@@ -418,16 +425,17 @@ class DownloadTracker(
                             helper.clearTrackSelections(0)
                             helper.addTrackSelection(0, qualitySelected)
 
-                            val mediaItemTag = mediaItem.localConfiguration?.tag as? MediaItemTag
-                            if (mediaItemTag != null && mediaItemTag.duration >= 0) {
+                            val mediaItem =
+                                this.mediaItem.localConfiguration?.tag as? com.abhishek.exodownload.MediaItem
+                            if (mediaItem != null && mediaItem.duration >= 0) {
                                 val estimatedContentLength: Long =
-                                    (qualitySelected.maxVideoBitrate * mediaItemTag.duration)
+                                    (qualitySelected.maxVideoBitrate * mediaItem.duration)
                                         .div(C.MILLIS_PER_SECOND).div(C.BITS_PER_BYTE)
 
                                 if (availableBytesLeft > estimatedContentLength) {
                                     val downloadRequest: DownloadRequest =
                                         downloadHelper.getDownloadRequest(
-                                            convertGson(mediaItemTag).toString(),
+                                            convertGson(mediaItem).toString(),
                                             Util.getUtf8Bytes(estimatedContentLength.toString())
                                         )
                                     startDownload(downloadRequest)
@@ -492,13 +500,13 @@ class DownloadTracker(
 
         private fun buildDownloadRequest(): DownloadRequest {
             return downloadHelper.getDownloadRequest(
-                convertGson((mediaItem.localConfiguration?.tag as MediaItemTag)).toString(),
+                convertGson((mediaItem.localConfiguration?.tag as com.abhishek.exodownload.MediaItem)).toString(),
                 Util.getUtf8Bytes(mediaItem.localConfiguration?.uri.toString())
             )
         }
     }
 
-    private fun convertGson(value: MediaItemTag): String? {
+    private fun convertGson(value: com.abhishek.exodownload.MediaItem): String? {
         val gson = Gson()
         return gson.toJson(value)
     }

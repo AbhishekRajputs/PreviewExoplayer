@@ -4,7 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".exodownload.MainActivity">
+    android:layout_height="match_parent">
+
+
+    <androidx.media3.ui.PlayerView
+        android:id="@+id/exoplayer"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <com.abhishek.exodownload.ui.CustomDownloadProgressbar
+        android:id="@+id/btn_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/exoplayer"
+        android:textAlignment="center" />
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

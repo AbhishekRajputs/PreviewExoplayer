@@ -1,9 +1,10 @@
-package com.abhishek.previewexoplayer.exodownload
+package com.abhishek.exodownload
 
 import android.view.View
 import android.widget.FrameLayout
 import com.abhishek.previewexoplayer.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.gson.Gson
 import java.text.DecimalFormat
 
 
@@ -38,4 +39,9 @@ fun Long.formatFileSize(): String {
         k > 1 -> dec.format(k) + " KB"
         else -> dec.format(b) + " Bytes"
     }
+}
+
+fun String.toMediaItem(): MediaItem {
+    val gson = Gson()
+    return gson.fromJson(this, MediaItem::class.java)
 }

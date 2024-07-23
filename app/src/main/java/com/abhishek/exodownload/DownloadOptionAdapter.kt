@@ -1,4 +1,4 @@
-package com.vidyakul.exodownload
+package com.abhishek.exodownload
 
 import android.graphics.Typeface
 import android.text.SpannableString

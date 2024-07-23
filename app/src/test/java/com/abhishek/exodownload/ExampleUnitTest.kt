@@ -1,4 +1,4 @@
-package com.abhishek.previewexoplayer
+package com.abhishek.exodownload
 
 import org.junit.Test
 

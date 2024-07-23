@@ -1,4 +1,4 @@
-package com.abhishek.previewexoplayer.exodownload
+package com.abhishek.exodownload
 
 import android.app.Notification
 import android.app.PendingIntent
@@ -11,8 +11,9 @@ import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.PlatformScheduler
+import com.abhishek.exodownload.Constants.PLAY_DOWNLOAD
+import com.abhishek.exodownload.DownloadUtil.DOWNLOAD_NOTIFICATION_CHANNEL_ID
 import com.abhishek.previewexoplayer.R
-import com.abhishek.previewexoplayer.exodownload.DownloadUtil.DOWNLOAD_NOTIFICATION_CHANNEL_ID
 
 private const val JOB_ID = 8888
 private const val FOREGROUND_NOTIFICATION_ID = 8989
@@ -47,8 +48,10 @@ class MyDownloadService : DownloadService(
         downloads: MutableList<Download>,
         notMetRequirements: Int
     ): Notification {
-        val contentIntent = createContentIntent(this, MainActivity::class.java)
-        val downloadIds = downloads.joinToString(", ") { it.request.id }
+        val contentIntent = createContentIntent(this, DownloadedActivity::class.java)
+        val downloadIds = downloads.joinToString(", ") {
+            it.request.id.toMediaItem().title
+        }
         val notificationText = "$downloadIds"
         return DownloadUtil.getDownloadNotificationHelper(this)
             .buildProgressNotification(
@@ -82,15 +85,16 @@ class MyDownloadService : DownloadService(
             download: Download,
             finalException: Exception?
         ) {
+            val mediaItemTag=download.request.id.toMediaItem()
 
             val notification: Notification = when (download.state) {
                 Download.STATE_COMPLETED -> {
-                    val contentIntent = createContentIntent(context, MainActivity::class.java)
+                    val contentIntent = createContentIntent(context, DownloadedActivity::class.java)
                     notificationHelper.buildDownloadCompletedNotification(
                         context,
                         R.drawable.ic_launcher_foreground,
                         contentIntent,
-                        download.request.id
+                        mediaItemTag.title
                     )
                 }
                 Download.STATE_FAILED -> {
@@ -110,7 +114,7 @@ class MyDownloadService : DownloadService(
     companion object {
         fun createContentIntent(context: Context, activityClass: Class<*>): PendingIntent {
             val intent = Intent(context, activityClass)
-            intent.putExtra("PLAY_DOWNLOAD", "PLAY_DOWNLOAD")
+            intent.putExtra(PLAY_DOWNLOAD, PLAY_DOWNLOAD)
             return PendingIntent.getActivity(
                 context,
                 System.currentTimeMillis().toInt(),

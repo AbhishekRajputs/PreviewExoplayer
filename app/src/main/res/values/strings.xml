@@ -14,4 +14,7 @@
     <string name="exo_download_stopped">Download stopped</string>
     <string name="exo_download_removing">Download removing</string>
     <string name="exo_download_restarting">Download restarting</string>
+    <string name="download_video">Download</string>
+    <string name="downloading">Downloading</string>
+    <string name="downloaded">Downloaded</string>
 </resources>
