@@ -174,11 +174,6 @@ class DownloadTracker(
                             false
                         )
                     }
-
-                    "View Downloads" -> {
-                        val intent = Intent(context, DownloadedActivity::class.java)
-                        startActivity(context, intent, null)
-                    }
                 }
                 actionDialog.dismiss()
             }
