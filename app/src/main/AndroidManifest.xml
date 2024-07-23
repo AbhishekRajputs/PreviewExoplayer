@@ -22,7 +22,7 @@
             android:name="com.abhishek.exodownload.ui.DownloadedActivity"
             android:exported="false" />
         <activity
-            android:name="com.abhishek.exodownload.ui.MainActivity"
+            android:name="com.abhishek.exodownload.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

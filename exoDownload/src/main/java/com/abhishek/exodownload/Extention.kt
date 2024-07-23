@@ -2,7 +2,6 @@ package com.abhishek.exodownload
 
 import android.view.View
 import android.widget.FrameLayout
-import com.abhishek.previewexoplayer.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import java.text.DecimalFormat

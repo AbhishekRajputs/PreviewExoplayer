@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.abhishek.previewexoplayer.databinding.ItemDownloadOptionsBinding
+import com.abhishek.exodownload.databinding.ItemDownloadOptionsBinding
 
 
 class DownloadOptionAdapter(

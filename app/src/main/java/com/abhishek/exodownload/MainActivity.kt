@@ -1,4 +1,4 @@
-package com.abhishek.exodownload.ui
+package com.abhishek.exodownload
 
 import android.os.Bundle
 import android.widget.Toast
@@ -11,10 +11,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.offline.Download
 import androidx.media3.exoplayer.offline.DownloadHelper
 import androidx.media3.exoplayer.offline.DownloadRequest
-import com.abhishek.exodownload.DownloadTracker
-import com.abhishek.exodownload.DownloadUtil
 import com.abhishek.exodownload.DownloadUtil.showConfirmationDialog
-import com.abhishek.exodownload.PlayerViewModel
 import com.abhishek.previewexoplayer.R
 import com.abhishek.previewexoplayer.databinding.ActivityMainBinding
 
@@ -36,7 +33,7 @@ class MainActivity : AppCompatActivity(), DownloadTracker.Listener {
        MediaItem.Builder()
             .setUri(url)
             .setMimeType(MimeTypes.APPLICATION_M3U8)
-            .setTag(com.abhishek.exodownload.MediaItem(-1,url))
+            .setTag(MediaItem(-1,url))
             .build()
     }
 

@@ -26,8 +26,7 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.source.TrackGroupArray
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.abhishek.exodownload.DownloadUtil.showConfirmationDialog
-import com.abhishek.previewexoplayer.R
-import com.abhishek.previewexoplayer.databinding.ExoDownloadBottomSheetBinding
+import com.abhishek.exodownload.databinding.ExoDownloadBottomSheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import kotlinx.coroutines.*

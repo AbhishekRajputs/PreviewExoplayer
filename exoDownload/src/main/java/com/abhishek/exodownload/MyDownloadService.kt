@@ -13,7 +13,6 @@ import androidx.media3.exoplayer.offline.DownloadService
 import androidx.media3.exoplayer.scheduler.PlatformScheduler
 import com.abhishek.exodownload.Constants.PLAY_DOWNLOAD
 import com.abhishek.exodownload.DownloadUtil.DOWNLOAD_NOTIFICATION_CHANNEL_ID
-import com.abhishek.previewexoplayer.R
 
 private const val JOB_ID = 8888
 private const val FOREGROUND_NOTIFICATION_ID = 8989

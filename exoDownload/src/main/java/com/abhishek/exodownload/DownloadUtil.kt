@@ -22,7 +22,6 @@ import androidx.media3.exoplayer.offline.DownloadManager
 import androidx.media3.exoplayer.offline.DownloadNotificationHelper
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import com.abhishek.previewexoplayer.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.chromium.net.CronetEngine
 import java.io.File

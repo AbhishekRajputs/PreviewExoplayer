@@ -1,12 +1,10 @@
-package com.abhishek.exodownload.ui
+package com.abhishek.exodownload
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import com.abhishek.exodownload.hide
-import com.abhishek.exodownload.show
 import com.abhishek.previewexoplayer.R
 import com.abhishek.previewexoplayer.databinding.CustomDownloadProgressBinding
 
