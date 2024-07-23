@@ -48,7 +48,6 @@ class MyDownloadService : DownloadService(
         downloads: MutableList<Download>,
         notMetRequirements: Int
     ): Notification {
-        val contentIntent = createContentIntent(this, DownloadedActivity::class.java)
         val downloadIds = downloads.joinToString(", ") {
             it.request.id.toMediaItem().title
         }
@@ -57,7 +56,7 @@ class MyDownloadService : DownloadService(
             .buildProgressNotification(
                 this,
                 R.drawable.ic_launcher_foreground,
-                contentIntent,
+                null,
                 notificationText,
                 downloads,
                 notMetRequirements
@@ -89,11 +88,10 @@ class MyDownloadService : DownloadService(
 
             val notification: Notification = when (download.state) {
                 Download.STATE_COMPLETED -> {
-                    val contentIntent = createContentIntent(context, DownloadedActivity::class.java)
                     notificationHelper.buildDownloadCompletedNotification(
                         context,
                         R.drawable.ic_launcher_foreground,
-                        contentIntent,
+                        null,
                         mediaItemTag.title
                     )
                 }
